@@ -10,8 +10,8 @@ import java.util.Scanner;
 public class FrameMain implements ActionListener {
     private JButton ButtonReadFile, ButtonLottery, ButtonSetting;
     private JCheckBox[] Box_AwardNum = {new JCheckBox("一等奖"), new JCheckBox("二等奖"), new JCheckBox("三等奖")};
-    private JLabel[] Label_awards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
-    private JComboBox[] Combo_awards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
+    private JLabel[] LabelAwards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
+    private JComboBox[] ComboAwards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
     private ArrayList<People> people = new ArrayList<People>();
 
     private JComboBox addNum(JComboBox<Integer> jComboBox) {
@@ -30,6 +30,19 @@ public class FrameMain implements ActionListener {
             people.add(new People(readline[0], readline[1]));
         }
         scanner.close();
+    }
+
+    private int getPrize(int n) {
+        if (Box_AwardNum[n].isSelected()) {
+            return (int) ComboAwards[n].getSelectedItem();
+        } else {
+            return 0;
+        }
+    }
+
+    private void lottery() {
+        int[] pool = {getPrize(0), getPrize(1), getPrize(2)};
+        //TODO 奖池
     }
 
     FrameMain() {
@@ -65,10 +78,10 @@ public class FrameMain implements ActionListener {
         JPanel[] LabelCamboAward = {new JPanel(), new JPanel(), new JPanel()};
         for (int i = 0; i < 3; i++) {
             LabelCamboAward[i].setLayout(new BoxLayout(LabelCamboAward[i], BoxLayout.X_AXIS));
-            LabelCamboAward[i].add(Label_awards[i]);
-            Label_awards[i].setVisible(false);
-            LabelCamboAward[i].add(Combo_awards[i]);
-            Combo_awards[i].setVisible(false);
+            LabelCamboAward[i].add(LabelAwards[i]);
+            LabelAwards[i].setVisible(false);
+            LabelCamboAward[i].add(ComboAwards[i]);
+            ComboAwards[i].setVisible(false);
             awards.add(LabelCamboAward[i]);
         }
         settingArea.add(awards);
@@ -93,12 +106,12 @@ public class FrameMain implements ActionListener {
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
         if (actionEvent.getSource() == ButtonSetting) {
-            new FrameSetting();
+            new FrameAddPeople();
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
-                Label_awards[x].setVisible(Box_AwardNum[x].isSelected());
-                Combo_awards[x].setVisible(Box_AwardNum[x].isSelected());
+                LabelAwards[x].setVisible(Box_AwardNum[x].isSelected());
+                ComboAwards[x].setVisible(Box_AwardNum[x].isSelected());
             }
         }
     }
