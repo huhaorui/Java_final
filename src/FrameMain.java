@@ -2,6 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class FrameMain implements ActionListener {
@@ -9,12 +12,24 @@ public class FrameMain implements ActionListener {
     private JCheckBox[] Box_AwardNum = {new JCheckBox("一等奖"), new JCheckBox("二等奖"), new JCheckBox("三等奖")};
     private JLabel[] Label_awards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
     private JComboBox[] Combo_awards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
+    private ArrayList<People> people = new ArrayList<People>();
 
     private JComboBox addNum(JComboBox<Integer> jComboBox) {
         for (int x = 0; x < 10; x++) {
             jComboBox.addItem(x);
         }
         return jComboBox;
+    }
+
+    private void readFile() throws FileNotFoundException {
+        String[] readline;
+        File file = new File("database.dat");
+        Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()) {
+            readline = scanner.nextLine().split(",");
+            people.add(new People(readline[0], readline[1]));
+        }
+        scanner.close();
     }
 
     FrameMain() {
@@ -34,7 +49,7 @@ public class FrameMain implements ActionListener {
         ButtonReadFile.addActionListener(this);
         ButtonSetting.addActionListener(this);
         ButtonLottery.addActionListener(this);
-        JPanel topArea=new JPanel();
+        JPanel topArea = new JPanel();
         topArea.setLayout(new BoxLayout(topArea, BoxLayout.X_AXIS));
         topArea.add(ButtonReadFile);
         topArea.add(ButtonSetting);
@@ -67,13 +82,18 @@ public class FrameMain implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
         if (actionEvent.getSource() == ButtonReadFile) {
-            JOptionPane.showMessageDialog(null, "读取文件成功", "提示", JOptionPane.INFORMATION_MESSAGE);
+            try {
+                readFile();
+                JOptionPane.showMessageDialog(null, "读取文件成功", "提示", JOptionPane.INFORMATION_MESSAGE);
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "读取文件错误", "提示", JOptionPane.ERROR_MESSAGE);
+            }
         }
         if (actionEvent.getSource() == ButtonLottery) {
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
-        if (actionEvent.getSource()==ButtonSetting){
-            //打开新的窗口
+        if (actionEvent.getSource() == ButtonSetting) {
+            new FrameSetting();
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
