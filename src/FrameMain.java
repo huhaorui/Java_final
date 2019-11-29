@@ -4,7 +4,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 
@@ -14,10 +16,13 @@ public class FrameMain implements ActionListener {
     private JLabel[] LabelAwards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
     private JComboBox[] ComboAwards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
     private JTable display = new JTable(0, 3);
+    private JPanel[] LabelCamboAward = {new JPanel(), new JPanel(), new JPanel()};
+    private JTextField filedProject;
+    private String subject = "抽奖";
     ArrayList<People> people = new ArrayList<>();
 
     private JComboBox addNum(JComboBox<Integer> jComboBox) {
-        for (int x = 0; x < 10; x++) {
+        for (int x = 1; x <= 255; x++) {
             jComboBox.addItem(x);
         }
         return jComboBox;
@@ -33,6 +38,35 @@ public class FrameMain implements ActionListener {
             people.add(new People(readline[0], readline[1]));
         }
         scanner.close();
+    }
+
+    private void saveLog() throws IOException {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+        Date date = new Date(System.currentTimeMillis());
+        String time = formatter.format(date);
+        File newFile = new File(time + ".dat");
+        File listFile=new File("filelist.dat");
+        if (!listFile.exists()){
+            if (!listFile.createNewFile()){
+                throw new IOException();
+            }
+        }
+        FileWriter fileWriter=new FileWriter(listFile.getName(),true);
+        fileWriter.write(time);
+        fileWriter.close();
+        if (!newFile.exists()) {
+            if (!newFile.createNewFile()) {
+                throw new IOException();
+            }
+        }
+        fileWriter = new FileWriter(newFile.getName());
+        fileWriter.write(filedProject.getText() + '\n');
+        for (People tmp : people) {
+            if (tmp.getAward() != 0) {
+                fileWriter.write(tmp.getName() + ',' + tmp.getTel() + ',' + tmp.getAward() + '\n');
+            }
+        }
+        fileWriter.close();
     }
 
     private int getPrize(int n) {
@@ -84,6 +118,10 @@ public class FrameMain implements ActionListener {
                 model.addRow(new String[]{tmp.getName(), telEncode(tmp.getTel()), awardToString(tmp.getAward())});
             }
         }
+        try {
+            saveLog();
+        } catch (IOException ignored) {
+        }
     }
 
     FrameMain() {
@@ -102,9 +140,9 @@ public class FrameMain implements ActionListener {
         display.setRowHeight(30);
         display.setCellSelectionEnabled(false);
         JPanel award = new JPanel();
-        award.setLayout(new BoxLayout(award, BoxLayout.Y_AXIS));
+        award.setLayout(new BoxLayout(award, BoxLayout.X_AXIS));
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, settingArea, displayArea);
-        JLabel Label_award = new JLabel("请选择要产生的奖项");
+        JLabel labelAward = new JLabel("请选择要产生的奖项");
         ButtonReadFile = new JButton("读取文件");
         ButtonSetting = new JButton("信息录入");
         ButtonLottery = new JButton("抽奖!");
@@ -115,8 +153,16 @@ public class FrameMain implements ActionListener {
         topArea.setLayout(new BoxLayout(topArea, BoxLayout.X_AXIS));
         topArea.add(ButtonReadFile);
         topArea.add(ButtonSetting);
+        JPanel nextArea = new JPanel();
+        nextArea.setMaximumSize(new Dimension(240, 30));
+        nextArea.setLayout(new BoxLayout(nextArea, BoxLayout.X_AXIS));
+        JLabel labelProject = new JLabel("主题：");
+        filedProject = new JTextField("抽奖");
+        nextArea.add(labelProject);
+        nextArea.add(filedProject);
         settingArea.add(topArea);
-        settingArea.add(Label_award);
+        settingArea.add(nextArea);
+        settingArea.add(labelAward);
         for (JCheckBox tmp : Box_AwardNum) {
             tmp.addActionListener(this);
             award.add(tmp);
@@ -124,9 +170,9 @@ public class FrameMain implements ActionListener {
         settingArea.add(award);
         JPanel awards = new JPanel();
         awards.setLayout(new BoxLayout(awards, BoxLayout.Y_AXIS));
-        JPanel[] LabelCamboAward = {new JPanel(), new JPanel(), new JPanel()};
         for (int i = 0; i < 3; i++) {
             LabelCamboAward[i].setLayout(new BoxLayout(LabelCamboAward[i], BoxLayout.X_AXIS));
+            LabelCamboAward[i].setMaximumSize(new Dimension(240, 0));
             LabelCamboAward[i].add(LabelAwards[i]);
             LabelAwards[i].setVisible(false);
             LabelCamboAward[i].add(ComboAwards[i]);
@@ -167,6 +213,7 @@ public class FrameMain implements ActionListener {
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
                 LabelAwards[x].setVisible(Box_AwardNum[x].isSelected());
+                LabelCamboAward[x].setMaximumSize(new Dimension(240, Box_AwardNum[x].isSelected() ? 30 : 0));
                 ComboAwards[x].setVisible(Box_AwardNum[x].isSelected());
             }
         }

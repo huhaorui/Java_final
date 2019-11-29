@@ -1,13 +1,7 @@
-public class People {
+class People {
     private String name;
     private String tel;
     private int award;
-
-    People() {
-        name = "";
-        tel = "";
-        award = 0;
-    }
 
     People(String name, String tel) {
         this.name = name;
@@ -23,14 +17,6 @@ public class People {
         return tel;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setTel(String tel) {
-        this.tel = tel;
-    }
-
     void setAward(int award) {
         this.award = award;
     }
@@ -39,7 +25,4 @@ public class People {
         return award;
     }
 
-    void print() {
-        System.out.println(name + " " + tel + " " + award);
-    }
 }
