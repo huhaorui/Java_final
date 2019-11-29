@@ -24,6 +24,7 @@ public class FrameMain implements ActionListener {
     }
 
     private void readFile() throws FileNotFoundException {
+        people.clear();
         String[] readline;
         File file = new File("database.dat");
         Scanner scanner = new Scanner(file);
@@ -60,7 +61,7 @@ public class FrameMain implements ActionListener {
     }
 
     private void lottery() {
-        ((DefaultTableModel)display.getModel()).getDataVector().clear();
+        ((DefaultTableModel) display.getModel()).getDataVector().clear();
         Pool pool = new Pool(getPrize(0), getPrize(1), getPrize(2), people.size());
         for (People tmp : people) {
             tmp.setAward(pool.getPrize());
@@ -138,6 +139,12 @@ public class FrameMain implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         splitPane.setDividerLocation(0.3);
+        try {
+            readFile();
+            JOptionPane.showMessageDialog(null, "读取文件成功", "提示", JOptionPane.INFORMATION_MESSAGE);
+        } catch (FileNotFoundException ignored) {
+            JOptionPane.showMessageDialog(null, "请点击 信息录入 添加抽奖者", "提示", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @Override
@@ -155,7 +162,7 @@ public class FrameMain implements ActionListener {
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
         if (actionEvent.getSource() == ButtonSetting) {
-            new FrameAddPeople(people,this);
+            new FrameAddPeople(people, this);
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
