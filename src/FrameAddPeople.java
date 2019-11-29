@@ -13,18 +13,23 @@ public class FrameAddPeople implements TableModelListener {
 
     private JFrame frame = new JFrame("信息录入");
 
-    private void saveFile() throws IOException {
+    private void saveFile() {
         File file = new File("database.dat");
         if (!file.exists()) {
-            if (!file.createNewFile()) {
-                throw new IOException();
+            try {
+                file.createNewFile();
+            } catch (IOException ignored) {
             }
         }
-        FileWriter fileWriter = new FileWriter(file.getName());
-        for (People tmp : people) {
-            fileWriter.write(tmp.getName() + ',' + tmp.getTel() + '\n');
+        try {
+            FileWriter fileWriter = new FileWriter(file.getName());
+            for (People tmp : people) {
+                fileWriter.write(tmp.getName() + ',' + tmp.getTel() + '\n');
+            }
+            fileWriter.close();
+        } catch (IOException ignored) {
+
         }
-        fileWriter.close();
     }
 
     private void setArrayList() {
@@ -70,11 +75,7 @@ public class FrameAddPeople implements TableModelListener {
     @Override
     public void tableChanged(TableModelEvent tableModelEvent) {
         setArrayList();
-        try {
-            saveFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        saveFile();
         if (!(display.getValueAt(display.getRowCount() - 1, 0).equals("") && display.getValueAt(display.getRowCount() - 1, 1).equals(""))) {
             ((DefaultTableModel) display.getModel()).addRow(new String[]{"", ""});
         }
