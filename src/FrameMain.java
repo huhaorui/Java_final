@@ -1,15 +1,10 @@
 import javax.swing.*;
-import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Scanner;
 
 
@@ -83,20 +78,19 @@ public class FrameMain implements ActionListener {
         settingArea.setLayout(new BoxLayout(settingArea, BoxLayout.Y_AXIS));
 
 
-        JScrollPane scr = new JScrollPane(display);
-        MainFrame.add(scr);
+        JScrollPane displayArea = new JScrollPane(display);
+        MainFrame.add(displayArea);
         display.setBorder(BorderFactory.createEtchedBorder());
         display.getColumnModel().getColumn(0).setHeaderValue("姓名");
         display.getColumnModel().getColumn(1).setHeaderValue("电话");
         display.getColumnModel().getColumn(2).setHeaderValue("奖项");
-        JPanel displayArea = new JPanel();
-
+        display.setEnabled(false);
         display.setRowHeight(30);
         display.setCellSelectionEnabled(false);
 
         JPanel award = new JPanel();
         award.setLayout(new BoxLayout(award, BoxLayout.Y_AXIS));
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, settingArea, scr);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, settingArea, displayArea);
         JLabel Label_award = new JLabel("请选择要产生的奖项");
         ButtonReadFile = new JButton("读取文件");
         ButtonSetting = new JButton("信息录入");
@@ -150,7 +144,7 @@ public class FrameMain implements ActionListener {
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
         if (actionEvent.getSource() == ButtonSetting) {
-            new FrameAddPeople();
+            new FrameAddPeople(people);
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
