@@ -14,7 +14,7 @@ public class FrameMain implements ActionListener {
     private JLabel[] LabelAwards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
     private JComboBox[] ComboAwards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
     private JTable display = new JTable(0, 3);
-    private ArrayList<People> people = new ArrayList<>();
+    ArrayList<People> people = new ArrayList<>();
 
     private JComboBox addNum(JComboBox<Integer> jComboBox) {
         for (int x = 0; x < 10; x++) {
@@ -60,10 +60,25 @@ public class FrameMain implements ActionListener {
     }
 
     private void lottery() {
+        ((DefaultTableModel)display.getModel()).getDataVector().clear();
         Pool pool = new Pool(getPrize(0), getPrize(1), getPrize(2), people.size());
         for (People tmp : people) {
             tmp.setAward(pool.getPrize());
-            if (tmp.getAward() != 0) {
+        }
+        for (People tmp : people) {
+            if (tmp.getAward() == 1) {
+                DefaultTableModel model = (DefaultTableModel) display.getModel();//获取defaulttablemodel
+                model.addRow(new String[]{tmp.getName(), telEncode(tmp.getTel()), awardToString(tmp.getAward())});
+            }
+        }
+        for (People tmp : people) {
+            if (tmp.getAward() == 2) {
+                DefaultTableModel model = (DefaultTableModel) display.getModel();//获取defaulttablemodel
+                model.addRow(new String[]{tmp.getName(), telEncode(tmp.getTel()), awardToString(tmp.getAward())});
+            }
+        }
+        for (People tmp : people) {
+            if (tmp.getAward() == 3) {
                 DefaultTableModel model = (DefaultTableModel) display.getModel();//获取defaulttablemodel
                 model.addRow(new String[]{tmp.getName(), telEncode(tmp.getTel()), awardToString(tmp.getAward())});
             }
@@ -76,8 +91,6 @@ public class FrameMain implements ActionListener {
         frame.setBounds(50, 50, 800, 400);
         JPanel settingArea = new JPanel();
         settingArea.setLayout(new BoxLayout(settingArea, BoxLayout.Y_AXIS));
-
-
         JScrollPane displayArea = new JScrollPane(display);
         MainFrame.add(displayArea);
         display.setBorder(BorderFactory.createEtchedBorder());
@@ -87,7 +100,6 @@ public class FrameMain implements ActionListener {
         display.setEnabled(false);
         display.setRowHeight(30);
         display.setCellSelectionEnabled(false);
-
         JPanel award = new JPanel();
         award.setLayout(new BoxLayout(award, BoxLayout.Y_AXIS));
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, settingArea, displayArea);
@@ -104,7 +116,6 @@ public class FrameMain implements ActionListener {
         topArea.add(ButtonSetting);
         settingArea.add(topArea);
         settingArea.add(Label_award);
-        //displayArea.add(display);
         for (JCheckBox tmp : Box_AwardNum) {
             tmp.addActionListener(this);
             award.add(tmp);
@@ -144,7 +155,7 @@ public class FrameMain implements ActionListener {
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
         if (actionEvent.getSource() == ButtonSetting) {
-            new FrameAddPeople(people);
+            new FrameAddPeople(people,this);
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
