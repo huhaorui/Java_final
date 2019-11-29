@@ -8,7 +8,11 @@ class People {
         this.tel = tel;
         this.award = 0;
     }
-
+    People(String name,String tel,int award){
+        this.name=name;
+        this.tel=tel;
+        this.award=award;
+    }
     String getName() {
         return name;
     }

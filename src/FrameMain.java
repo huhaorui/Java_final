@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 
 public class FrameMain implements ActionListener {
-    private JButton ButtonReadFile, ButtonLottery, ButtonSetting;
+    private JButton ButtonReadFile, ButtonLottery, ButtonSetting,ButtonChooseHistory;
     private JCheckBox[] Box_AwardNum = {new JCheckBox("一等奖"), new JCheckBox("二等奖"), new JCheckBox("三等奖")};
     private JLabel[] LabelAwards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
     private JComboBox[] ComboAwards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
@@ -52,7 +52,7 @@ public class FrameMain implements ActionListener {
             }
         }
         FileWriter fileWriter=new FileWriter(listFile.getName(),true);
-        fileWriter.write(time);
+        fileWriter.write(time+'\n');
         fileWriter.close();
         if (!newFile.exists()) {
             if (!newFile.createNewFile()) {
@@ -146,13 +146,16 @@ public class FrameMain implements ActionListener {
         ButtonReadFile = new JButton("读取文件");
         ButtonSetting = new JButton("信息录入");
         ButtonLottery = new JButton("抽奖!");
+        ButtonChooseHistory=new JButton("历史记录");
         ButtonReadFile.addActionListener(this);
         ButtonSetting.addActionListener(this);
         ButtonLottery.addActionListener(this);
+        ButtonChooseHistory.addActionListener(this);
         JPanel topArea = new JPanel();
         topArea.setLayout(new BoxLayout(topArea, BoxLayout.X_AXIS));
         topArea.add(ButtonReadFile);
         topArea.add(ButtonSetting);
+        topArea.add(ButtonChooseHistory);
         JPanel nextArea = new JPanel();
         nextArea.setMaximumSize(new Dimension(240, 30));
         nextArea.setLayout(new BoxLayout(nextArea, BoxLayout.X_AXIS));
@@ -184,7 +187,7 @@ public class FrameMain implements ActionListener {
         MainFrame.add(splitPane);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-        splitPane.setDividerLocation(0.3);
+        splitPane.setDividerLocation(0.35);
         try {
             readFile();
             JOptionPane.showMessageDialog(null, "读取文件成功", "提示", JOptionPane.INFORMATION_MESSAGE);
@@ -209,6 +212,9 @@ public class FrameMain implements ActionListener {
         }
         if (actionEvent.getSource() == ButtonSetting) {
             new FrameAddPeople(people, this);
+        }
+        if(actionEvent.getSource()==ButtonChooseHistory){
+            new FrameChooseHistory();
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
