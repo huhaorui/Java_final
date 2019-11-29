@@ -1,9 +1,15 @@
 import javax.swing.*;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Scanner;
 
 
@@ -12,7 +18,8 @@ public class FrameMain implements ActionListener {
     private JCheckBox[] Box_AwardNum = {new JCheckBox("一等奖"), new JCheckBox("二等奖"), new JCheckBox("三等奖")};
     private JLabel[] LabelAwards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
     private JComboBox[] ComboAwards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
-    private ArrayList<People> people = new ArrayList<People>();
+    private JTable display = new JTable(0, 3);
+    private ArrayList<People> people = new ArrayList<>();
 
     private JComboBox addNum(JComboBox<Integer> jComboBox) {
         for (int x = 0; x < 10; x++) {
@@ -40,9 +47,32 @@ public class FrameMain implements ActionListener {
         }
     }
 
+    private String awardToString(int n) {
+        switch (n) {
+            case 1:
+                return "一等奖";
+            case 2:
+                return "二等奖";
+            case 3:
+                return "三等奖";
+            default:
+                return "未获奖";
+        }
+    }
+
+    private String telEncode(String tel) {
+        return tel.substring(0, tel.length() - 2) + "**";
+    }
+
     private void lottery() {
-        int[] pool = {getPrize(0), getPrize(1), getPrize(2)};
-        //TODO 奖池
+        Pool pool = new Pool(getPrize(0), getPrize(1), getPrize(2), people.size());
+        for (People tmp : people) {
+            tmp.setAward(pool.getPrize());
+            if (tmp.getAward() != 0) {
+                DefaultTableModel model = (DefaultTableModel) display.getModel();//获取defaulttablemodel
+                model.addRow(new String[]{tmp.getName(), telEncode(tmp.getTel()), awardToString(tmp.getAward())});
+            }
+        }
     }
 
     FrameMain() {
@@ -51,10 +81,22 @@ public class FrameMain implements ActionListener {
         frame.setBounds(50, 50, 800, 400);
         JPanel settingArea = new JPanel();
         settingArea.setLayout(new BoxLayout(settingArea, BoxLayout.Y_AXIS));
+
+
+        JScrollPane scr = new JScrollPane(display);
+        MainFrame.add(scr);
+        display.setBorder(BorderFactory.createEtchedBorder());
+        display.getColumnModel().getColumn(0).setHeaderValue("姓名");
+        display.getColumnModel().getColumn(1).setHeaderValue("电话");
+        display.getColumnModel().getColumn(2).setHeaderValue("奖项");
         JPanel displayArea = new JPanel();
+
+        display.setRowHeight(30);
+        display.setCellSelectionEnabled(false);
+
         JPanel award = new JPanel();
         award.setLayout(new BoxLayout(award, BoxLayout.Y_AXIS));
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, settingArea, displayArea);
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, settingArea, scr);
         JLabel Label_award = new JLabel("请选择要产生的奖项");
         ButtonReadFile = new JButton("读取文件");
         ButtonSetting = new JButton("信息录入");
@@ -68,6 +110,7 @@ public class FrameMain implements ActionListener {
         topArea.add(ButtonSetting);
         settingArea.add(topArea);
         settingArea.add(Label_award);
+        //displayArea.add(display);
         for (JCheckBox tmp : Box_AwardNum) {
             tmp.addActionListener(this);
             award.add(tmp);
@@ -103,6 +146,7 @@ public class FrameMain implements ActionListener {
             }
         }
         if (actionEvent.getSource() == ButtonLottery) {
+            lottery();
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
         if (actionEvent.getSource() == ButtonSetting) {

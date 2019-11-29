@@ -1,22 +1,25 @@
 public class People {
     private String name;
     private String tel;
+    private int award;
 
     People() {
         name = "";
         tel = "";
+        award = 0;
     }
 
     People(String name, String tel) {
         this.name = name;
         this.tel = tel;
+        this.award = 0;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public String getTel() {
+    String getTel() {
         return tel;
     }
 
@@ -27,7 +30,16 @@ public class People {
     public void setTel(String tel) {
         this.tel = tel;
     }
-    public void print(){
-        System.out.println(name+" "+tel);
+
+    void setAward(int award) {
+        this.award = award;
+    }
+
+    int getAward() {
+        return award;
+    }
+
+    void print() {
+        System.out.println(name + " " + tel + " " + award);
     }
 }
