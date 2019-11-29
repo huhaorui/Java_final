@@ -10,7 +10,6 @@ public class FrameAddPeople implements TableModelListener {
     private ArrayList<People> people;
     private FrameMain frameMain;
     private JTable display = new JTable(0, 2);
-
     private JFrame frame = new JFrame("信息录入");
 
     private void saveFile() {
@@ -28,7 +27,6 @@ public class FrameAddPeople implements TableModelListener {
             }
             fileWriter.close();
         } catch (IOException ignored) {
-
         }
     }
 
@@ -43,12 +41,11 @@ public class FrameAddPeople implements TableModelListener {
         frameMain.people = people;
     }
 
-    private void initFrame() {
+    private void initFrame(int x, int y) {
         int RowCount = display.getRowCount();
         for (int i = 0; i < RowCount; i++) {
             display.remove(1);
         }
-
         DefaultTableModel model = (DefaultTableModel) display.getModel();//获取defaulttablemodel
         for (People tmp : people) {
             model.addRow(new String[]{tmp.getName(), tmp.getTel()});
@@ -59,18 +56,16 @@ public class FrameAddPeople implements TableModelListener {
         display.getColumnModel().getColumn(0).setHeaderValue("姓名");
         display.getColumnModel().getColumn(1).setHeaderValue("电话");
         display.setRowHeight(30);
-
-        frame.setBounds(70, 70, 300, 400);
+        frame.setBounds(x + 20, y + 20, 300, 400);
         frame.add(displayArea);
         frame.setVisible(true);
     }
 
-    FrameAddPeople(ArrayList<People> people, FrameMain frameMain) {
+    FrameAddPeople(ArrayList<People> people, FrameMain frameMain, int x, int y) {
         this.frameMain = frameMain;
         this.people = people;
-        initFrame();
+        initFrame(x, y);
     }
-
 
     @Override
     public void tableChanged(TableModelEvent tableModelEvent) {

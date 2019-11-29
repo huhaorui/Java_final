@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 class FrameViewHistory {
     private String history;
-    String subject;
+    private String subject;
     private ArrayList<People> people = new ArrayList<>();
 
     private int awardToInt(String award) {
@@ -37,11 +37,11 @@ class FrameViewHistory {
         }
     }
 
-    FrameViewHistory(String history) {
+    FrameViewHistory(String history, int x, int y) {
         this.history = history;
         readFile();
         JFrame frame = new JFrame(history);
-        frame.setBounds(150, 150, 500, 300);
+        frame.setBounds(x + 20, y + 20, 500, 300);
         frame.setVisible(true);
         JLabel labelSubject = new JLabel("主题:" + subject);
         JTable display = new JTable(0, 3);

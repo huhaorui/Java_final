@@ -9,16 +9,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
-
 public class FrameMain implements ActionListener {
-    private JButton ButtonReadFile, ButtonLottery, ButtonSetting,ButtonChooseHistory;
+    private JFrame frame;
+    private JButton ButtonReadFile, ButtonLottery, ButtonSetting, ButtonChooseHistory;
     private JCheckBox[] Box_AwardNum = {new JCheckBox("一等奖"), new JCheckBox("二等奖"), new JCheckBox("三等奖")};
     private JLabel[] LabelAwards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
     private JComboBox[] ComboAwards = {addNum(new JComboBox<>()), addNum(new JComboBox<>()), addNum(new JComboBox<>())};
     private JTable display = new JTable(0, 3);
-    private JPanel[] LabelCamboAward = {new JPanel(), new JPanel(), new JPanel()};
+    private JPanel[] LabelComboAward = {new JPanel(), new JPanel(), new JPanel()};
     private JTextField filedProject;
-    private String subject = "抽奖";
     ArrayList<People> people = new ArrayList<>();
 
     private JComboBox addNum(JComboBox<Integer> jComboBox) {
@@ -45,14 +44,14 @@ public class FrameMain implements ActionListener {
         Date date = new Date(System.currentTimeMillis());
         String time = formatter.format(date);
         File newFile = new File(time + ".dat");
-        File listFile=new File("filelist.dat");
-        if (!listFile.exists()){
-            if (!listFile.createNewFile()){
+        File listFile = new File("filelist.dat");
+        if (!listFile.exists()) {
+            if (!listFile.createNewFile()) {
                 throw new IOException();
             }
         }
-        FileWriter fileWriter=new FileWriter(listFile.getName(),true);
-        fileWriter.write(time+'\n');
+        FileWriter fileWriter = new FileWriter(listFile.getName(), true);
+        fileWriter.write(time + '\n');
         fileWriter.close();
         if (!newFile.exists()) {
             if (!newFile.createNewFile()) {
@@ -124,10 +123,10 @@ public class FrameMain implements ActionListener {
         }
     }
 
-    FrameMain() {
-        JFrame frame = new JFrame("幸运观众手机号码抽取器");
+    FrameMain(int x, int y) {
+        frame = new JFrame("幸运观众手机号码抽取器");
         Container MainFrame = frame.getContentPane();
-        frame.setBounds(50, 50, 800, 400);
+        frame.setBounds(x, y, 800, 400);
         JPanel settingArea = new JPanel();
         settingArea.setLayout(new BoxLayout(settingArea, BoxLayout.Y_AXIS));
         JScrollPane displayArea = new JScrollPane(display);
@@ -146,7 +145,7 @@ public class FrameMain implements ActionListener {
         ButtonReadFile = new JButton("读取文件");
         ButtonSetting = new JButton("信息录入");
         ButtonLottery = new JButton("抽奖!");
-        ButtonChooseHistory=new JButton("历史记录");
+        ButtonChooseHistory = new JButton("历史记录");
         ButtonReadFile.addActionListener(this);
         ButtonSetting.addActionListener(this);
         ButtonLottery.addActionListener(this);
@@ -174,13 +173,13 @@ public class FrameMain implements ActionListener {
         JPanel awards = new JPanel();
         awards.setLayout(new BoxLayout(awards, BoxLayout.Y_AXIS));
         for (int i = 0; i < 3; i++) {
-            LabelCamboAward[i].setLayout(new BoxLayout(LabelCamboAward[i], BoxLayout.X_AXIS));
-            LabelCamboAward[i].setMaximumSize(new Dimension(240, 0));
-            LabelCamboAward[i].add(LabelAwards[i]);
+            LabelComboAward[i].setLayout(new BoxLayout(LabelComboAward[i], BoxLayout.X_AXIS));
+            LabelComboAward[i].setMaximumSize(new Dimension(240, 0));
+            LabelComboAward[i].add(LabelAwards[i]);
             LabelAwards[i].setVisible(false);
-            LabelCamboAward[i].add(ComboAwards[i]);
+            LabelComboAward[i].add(ComboAwards[i]);
             ComboAwards[i].setVisible(false);
-            awards.add(LabelCamboAward[i]);
+            awards.add(LabelComboAward[i]);
         }
         settingArea.add(awards);
         settingArea.add(ButtonLottery);
@@ -211,15 +210,15 @@ public class FrameMain implements ActionListener {
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
         if (actionEvent.getSource() == ButtonSetting) {
-            new FrameAddPeople(people, this);
+            new FrameAddPeople(people, this, frame.getX(), frame.getY());
         }
-        if(actionEvent.getSource()==ButtonChooseHistory){
-            new FrameChooseHistory();
+        if (actionEvent.getSource() == ButtonChooseHistory) {
+            new FrameChooseHistory(frame.getX(), frame.getY());
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {
                 LabelAwards[x].setVisible(Box_AwardNum[x].isSelected());
-                LabelCamboAward[x].setMaximumSize(new Dimension(240, Box_AwardNum[x].isSelected() ? 30 : 0));
+                LabelComboAward[x].setMaximumSize(new Dimension(240, Box_AwardNum[x].isSelected() ? 30 : 0));
                 ComboAwards[x].setVisible(Box_AwardNum[x].isSelected());
             }
         }
