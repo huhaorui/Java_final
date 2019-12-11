@@ -5,12 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Scanner;
+import java.util.*;
 
-public class FrameMain implements ActionListener {
-    private JFrame frame;
+public class FrameMain extends JFrame implements ActionListener {
     private JButton ButtonReadFile, ButtonLottery, ButtonSetting, ButtonChooseHistory;
     private JCheckBox[] Box_AwardNum = {new JCheckBox("一等奖"), new JCheckBox("二等奖"), new JCheckBox("三等奖")};
     private JLabel[] LabelAwards = {new JLabel("一等奖个数："), new JLabel("二等奖个数："), new JLabel("三等奖个数：")};
@@ -90,6 +87,9 @@ public class FrameMain implements ActionListener {
     }
 
     private String telEncode(String tel) {
+        if (tel.length() < 2) {
+            return "**";
+        }
         return tel.substring(0, tel.length() - 2) + "**";
     }
 
@@ -124,9 +124,9 @@ public class FrameMain implements ActionListener {
     }
 
     FrameMain(int x, int y) {
-        frame = new JFrame("幸运观众手机号码抽取器");
-        Container MainFrame = frame.getContentPane();
-        frame.setBounds(x, y, 800, 400);
+        setTitle("幸运观众手机号码抽取器");
+        Container MainFrame = getContentPane();
+        setBounds(x, y, 800, 400);
         JPanel settingArea = new JPanel();
         settingArea.setLayout(new BoxLayout(settingArea, BoxLayout.Y_AXIS));
         JScrollPane displayArea = new JScrollPane(display);
@@ -184,8 +184,8 @@ public class FrameMain implements ActionListener {
         settingArea.add(awards);
         settingArea.add(ButtonLottery);
         MainFrame.add(splitPane);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
         splitPane.setDividerLocation(0.35);
         try {
             readFile();
@@ -210,10 +210,10 @@ public class FrameMain implements ActionListener {
             JOptionPane.showMessageDialog(null, "抽奖成功", "提示", JOptionPane.INFORMATION_MESSAGE);
         }
         if (actionEvent.getSource() == ButtonSetting) {
-            new FrameAddPeople(people, this, frame.getX(), frame.getY());
+            new FrameAddPeople(people, this, getX(), getY());
         }
         if (actionEvent.getSource() == ButtonChooseHistory) {
-            new FrameChooseHistory(frame.getX(), frame.getY());
+            new FrameChooseHistory(getX(), getY());
         }
         if (actionEvent.getSource() == Box_AwardNum[0] || actionEvent.getSource() == Box_AwardNum[1] || actionEvent.getSource() == Box_AwardNum[2]) {
             for (int x = 0; x < 3; x++) {

@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
-
 class FrameChooseHistory implements ActionListener {
     private JFrame frame;
     private JComboBox<String> historyList = new JComboBox<>();
